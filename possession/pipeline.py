@@ -112,7 +112,8 @@ def run(game=GAME, data_dir=None, n_frames=None, blocks=None, verbose=True):
             print("    {:<32} {:>6}  {}".format(
                 code, "-" if rate is None else "{:.2f}".format(rate), decision))
     return labels, {"counts": counts, "n_possessions": n_poss, "mean_duration_s": mean_dur,
-                    "tag_report": report}
+                    "tag_report": report, "features": f, "team": data["team"],
+                    "blocks": blocks, "names": (home_name, away_name)}
 
 
 def main():
