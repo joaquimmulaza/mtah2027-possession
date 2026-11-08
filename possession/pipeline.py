@@ -62,6 +62,28 @@ def summarise(labels, blocks, fps):
     return counts, n_poss, (float(np.mean(durations)) if durations else 0.0)
 
 
+def infer(f, blocks, set_pieces=(), goals=(), phases=None):
+    """The algorithm itself, on any match: features + tagging in, labels out.
+
+    Shared by the submission run and by the external-data tuning (tools/external.py), so the
+    parameters tuned on external games are exactly the ones that label the provided game.
+    """
+    n_frames = len(f["ball_speed"])
+    dead, restarts = dead_ball.detect(f, list(set_pieces), list(goals), blocks)
+    # Pass 1: tracking only. Pass 2: tagging prior calibrated against pass 1 fills the stretches
+    # the tracking could not decide.
+    live1, _ = states.label_live(f, dead, restarts)
+    report = {}
+    prior = None
+    if phases:
+        prior, report = tagging.calibrated_prior(phases, to_letters(dead, live1, blocks),
+                                                 n_frames)
+        live, _ = states.label_live(f, dead, restarts, prior)
+    else:
+        live = live1
+    return to_letters(dead, live, blocks), dead, restarts, report
+
+
 def run(game=GAME, data_dir=None, n_frames=None, blocks=None, verbose=True):
     """Labels array ('H','A','D','X') for every video frame, plus a diagnostics dict."""
     t0 = time.time()
@@ -92,16 +114,9 @@ def run(game=GAME, data_dir=None, n_frames=None, blocks=None, verbose=True):
     log("smart tagging: {} instances, {} set pieces, {} goals".format(
         len(events), len(set_pieces), len(goals)))
 
-    dead, restarts = dead_ball.detect(f, set_pieces, goals, blocks)
+    labels, dead, restarts, report = infer(f, blocks, set_pieces, goals, phases)
     log("dead ball on {:.1f}% of graded frames, {} restarts".format(
         100 * np.concatenate([dead[a:b] for a, b in blocks]).mean(), len(restarts)))
-
-    # Pass 1: tracking only. Pass 2: tagging prior calibrated against pass 1 fills the stretches
-    # the tracking could not decide.
-    live1, _ = states.label_live(f, dead, restarts)
-    prior, report = tagging.calibrated_prior(phases, to_letters(dead, live1, blocks), n_frames)
-    live, control_team = states.label_live(f, dead, restarts, prior)
-    labels = to_letters(dead, live, blocks)
 
     counts, n_poss, mean_dur = summarise(labels, blocks, fps)
     log("graded frames: H {H}  A {A}  D {D}  X {X}".format(**counts))

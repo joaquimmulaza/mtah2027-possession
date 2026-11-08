@@ -42,7 +42,11 @@ say nothing about the real match.
 | synthetic match | macroF1 | spellF1 | possessions (truth 51) |
 |---|---|---|---|
 | reference baseline (`smooth50`) | 0.47 | 0.22 | 161 |
-| this pipeline | 0.94 | 0.83 | 46 |
+| this pipeline | 0.94 | 0.83 | 48 |
+
+On Metrica's three public sample games (external data, tracking degraded to the provided game's
+conditions, reference possession derived from their events), spellF1 is 0.46 / 0.50 / 0.46 against
+0.30 / 0.27 / 0.25 for the reference baseline; game 3 was held out from tuning.
 
 ## Repository layout
 
@@ -55,6 +59,8 @@ possession/                 our solution
   states.py                 control spells -> confirmed possession changes
   tagging.py                Smart Tagging: restarts + a self-calibrated team prior
   pipeline.py               entry point
+tools/external.py           tuning + validation on Metrica's public sample games (external data)
+tools/stability.py          robustness: each threshold +/-25%, compared with the default run
 tests/                      synthetic match generator + end-to-end test
 TECHNICAL_DOCUMENT.md       the technical document (deliverable 3)
 requirements-lock.txt       pinned dependencies
@@ -69,9 +75,12 @@ loaders (`starter/`, `games.py`) and the challenge documentation (`README_CHALLE
 - **Labels come from an algorithm only.** No hand labels or hand corrections on the provided game,
   in any amount, for any purpose.
 - **No private ground truth and no human-produced data about this game** (no event data).
-- **Not tuned on the public 5 minutes.** It was used only to check frame alignment and the file
-  format. Every threshold is a prior, documented in `possession/config.py`.
-- **No external training data.** The method has no learnt parameters.
+- **Tuned on external data only**, as the organisers' rules clarification requires: Metrica's
+  public sample games, with reference possession derived mechanically from their event data
+  (`python -m tools.external --tune`). Nothing was trained, fitted or calibrated on the provided
+  game's ground truth or video; the public 5 minutes were used only to check frame alignment and the
+  file format.
+- **No human review of our output on the provided game**, and no hand labels anywhere.
 - **The match data is not in this repository**, and neither is anything derived from it (`data/` is
   gitignored, the cache included). It has never been uploaded to any hosted LLM or cloud service.
 - **Reproducible:** pinned dependencies, deterministic code, one command.

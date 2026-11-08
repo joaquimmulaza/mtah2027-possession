@@ -1,5 +1,12 @@
 """Every tunable number of the pipeline, in one place, with the football reason behind it.
 
+TUNING (organisers' clarification: parameters MUST be tuned on external data only). The ten
+parameters in tools/external.py GRID were tuned by coordinate descent on Metrica's public sample
+games 1 and 2, with game 3 held out, using reference possession derived mechanically from their
+event data: `python -m tools.external --tune` reproduces it. Values marked [tuned] below come from
+that run; the others kept their prior because no grid value beat it. Nothing here was fitted to
+the provided game, its ground truth or its video.
+
 None of these values was fitted to the public 5-minute ground truth. RULES.md forbids it, and
 EVALUATION.md shows why it would pick the wrong answer anyway: 17 possessions cannot rank two
 settings. Each value below is a physical or footballing prior -- how fast players move, how close
@@ -26,15 +33,15 @@ BALL_SMOOTH_FRAMES = 5
 # ---------------------------------------------------------------------------------------------
 # A player controls the ball when it is within this radius of them (metres). Feet are ~0.5 m from
 # the tracked body centre and automatic tracking adds ~0.5-1 m of noise.
-CONTROL_RADIUS_M = 2.0
+CONTROL_RADIUS_M = 2.5            # [tuned] prior 2.0
 
 # ...and the nearest opponent is at least this much further away. Inside that margin it is a duel,
 # which by the challenge's rules does not change possession on its own.
-CONTROL_MARGIN_M = 0.7
+CONTROL_MARGIN_M = 0.5            # [tuned] prior 0.7
 
 # ...and the ball is slower than this (m/s). A sprinting dribble is ~7-8 m/s; a pass in flight
 # passing close to a player is 10-25 m/s and is not control.
-CONTROL_MAX_BALL_SPEED = 8.0
+CONTROL_MAX_BALL_SPEED = 10.0     # [tuned] prior 8.0
 
 # Control frames of the same team separated by a gap this short are one spell (tracking flicker).
 SPELL_JOIN_GAP = 4
@@ -43,7 +50,7 @@ SPELL_JOIN_GAP = 4
 # Change of possession (CHALLENGE.md: "controlled possession by the opponent")
 # ---------------------------------------------------------------------------------------------
 # One opposing spell this long confirms a change: the opponent kept the ball, not just touched it.
-CONFIRM_HOLD_FRAMES = 15          # 0.6 s
+CONFIRM_HOLD_FRAMES = 12         # [tuned] 0.48 s; prior 15
 
 # Or: this many distinct opposing spells in a row with no spell of the possessing team in between,
 # i.e. the opponent made a pass and someone of theirs received it. Distinct = different track slot
@@ -62,7 +69,7 @@ GAP_MIDPOINT_MIN = 10
 # A possession shorter than this (inside live play) is merged into the one before it. A real
 # possession needs at least a controlled touch and a decision; 1 s is the shortest a coach would
 # count. It is also what keeps spellF1 from being flooded by flicker.
-MIN_POSSESSION_FRAMES = 25
+MIN_POSSESSION_FRAMES = 38        # [tuned] 1.5 s; prior 25
 
 # ---------------------------------------------------------------------------------------------
 # Dead ball
@@ -77,7 +84,7 @@ OUT_MARGIN_M = 0.5
 # median intensity over the graded frames: a self-calibration with no labels involved. A stoppage
 # is the whole pitch clearly below its usual pace.
 ACTIVITY_WINDOW = 50              # 2 s
-ACTIVITY_DEAD_REL = 0.6           # below 60% of the match median: nobody is playing
+ACTIVITY_DEAD_REL = 0.4           # [tuned] below 40% of the match median: nobody is playing; prior 0.6
 ACTIVITY_SLOW_REL = 0.85          # below 85% of it, and the ball is still or untracked: a set piece
                                   # being set up
 
@@ -87,7 +94,7 @@ BALL_STILL_WINDOW = 25
 BALL_STILL_FRACTION = 0.8
 
 # A restart is the ball being struck: speed above this for RESTART_RUN frames after being still.
-RESTART_KICK_MS = 4.0
+RESTART_KICK_MS = 3.0             # [tuned] prior 4.0
 RESTART_RUN = 3
 
 # How long after the ball leaves the pitch to look for the restart before giving up (frames).

@@ -31,15 +31,21 @@ Se algum número estiver muito fora, o problema é de **correção** (unidades, 
 de afinação.
 
 ## 3. O papel de quem percebe de futebol
-- Ver o vídeo à volta das trocas de posse e dizer onde a **regra** falha (ex.: "um passe
-  intercetado mas que volta logo não devia contar"). Isso é permitido.
-- **Proibido:** escrever rótulos à mão, corrigir frames, ou criar constantes ligadas a frames
-  específicos do jogo. Toda a melhoria tem de ser uma regra geral no código.
-- Os parâmetros estão em `possession/config.py`, cada um com a justificação futebolística.
+Segundo o email de clarificação da organização, que prevalece sobre tudo o resto:
+- **Permitido:** explicar o que conta como posse no futebol, em geral. Também é permitido ver os
+  dados e o vídeo do jogo **para perceber** o que conta como posse.
+- **Permitido:** ver e comentar **jogos externos** (os jogos de exemplo da Metrica em
+  `data/external/`) e ajudar a afinar as regras nesses jogos.
+- **Proibido:** verificar o resultado do sistema contra o vídeo ou contra o jogo da competição,
+  ou dar notas e avaliações humanas sobre o resultado neste jogo. Também é proibido escrever
+  rótulos à mão ou corrigir frames.
+- Os parâmetros estão em `possession/config.py`, afinados só em jogos externos
+  (`python -m tools.external`).
 
 ## 4. Não façam isto
-- **Não afinem parâmetros para subir o score nos 5 min públicos.** É contra as regras e escolhe a
-  configuração errada (EVALUATION.md prova-o).
+- **Não afinem nem calibrem nada no ground truth (nem nos 5 min públicos) nem no vídeo.** Os
+  parâmetros afinam-se só com dados externos.
+- Não enviem dados do jogo para serviços de IA.
 - Não façam commit de `data/`. O repositório tem de ser público, mas os dados não.
 - Não usem dados de eventos (Opta, StatsBomb…) deste jogo.
 
@@ -54,6 +60,5 @@ Equipa de 3 a 5 pessoas: 3 é o mínimo para a Final Pitch.
 ## 6. Próximas melhorias (por ordem de ganho esperado)
 1. **Recuperar a bola em falta (41%)** com um detetor YOLO no vídeo tático (o repositório
    football_analysis serve aqui), treinado só com dados de **outros jogos**.
-2. Calibrar `CONTROL_RADIUS_M` de forma auto-supervisionada, a partir da distribuição de
-   distâncias bola–jogador com a bola lenta.
+2. Afinar mais parâmetros nos jogos externos (`tools/external.py`).
 3. Melhorar a deteção de livres rápidos sem tag.
