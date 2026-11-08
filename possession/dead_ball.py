@@ -79,6 +79,12 @@ def detect(f, set_pieces, goals, blocks):
     restarts = {}
 
     # 3. nobody is playing
+    graded = np.zeros(n, dtype=bool)
+    for first, last in blocks:
+        graded[first:last] = True
+    reference = float(np.nanmedian(f["activity"][graded])) if graded.any() else 1.0
+    dead_ms = C.ACTIVITY_DEAD_REL * reference
+    slow_ms = C.ACTIVITY_SLOW_REL * reference
     activity = np.nan_to_num(f["activity"], nan=0.0)
     speed = f["ball_speed"]
     still_frac = moving_fraction(speed < C.BALL_STILL_MS, f["have_ball"] & ~np.isnan(speed),
@@ -86,7 +92,7 @@ def detect(f, set_pieces, goals, blocks):
     still = np.nan_to_num(still_frac, nan=0.0) >= C.BALL_STILL_FRACTION
     no_ball = np.nan_to_num(moving_fraction(f["have_ball"], np.ones(n, bool), C.ACTIVITY_WINDOW),
                             nan=0.0) == 0
-    dead = (activity < C.ACTIVITY_DEAD_MS) | ((activity < C.ACTIVITY_SLOW_MS) & (still | no_ball))
+    dead = (activity < dead_ms) | ((activity < slow_ms) & (still | no_ball))
 
     # Each activity stoppage ends on the kick nearest its end, if there is one.
     for start, stop in runs_of(dead):

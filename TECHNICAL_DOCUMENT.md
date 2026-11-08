@@ -48,8 +48,12 @@ change goes in the middle of that hole.
 1. **Out of the pitch**: ball > 0.5 m beyond a line → dead until the next restart kick.
 2. **Tagged set pieces**: dead for ≥ 2 s before the restart kick found inside the tag window ± 3 s,
    extended back over any already-dead stretch.
-3. **Nobody playing**: median player speed over 2 s below 1.3 m/s, or below 2.0 m/s with the ball
-   still or untracked. This catches the fouls and stoppages the tagging does not.
+3. **Nobody playing**: median player speed over 2 s below 60 % of the match's own median
+   intensity, or below 85 % of it with the ball still or untracked. This catches the fouls and
+   stoppages the tagging does not. The thresholds are relative because absolute ones do not
+   transfer: our first version assumed open play at 2–3 m/s, but the median frame of this match is
+   ~1.4 m/s, and a fixed 1.3 m/s marked 58 % of graded frames dead. Self-calibrated, the dead share
+   is 41 %, in line with the ~40 % of match time the ball is out of play in professional football.
 4. **Goals and kickoffs**: dead from the ball crossing the line to the next kickoff; inside each
    graded half, everything before its kickoff (the second half is graded before it kicks off).
 
@@ -65,6 +69,13 @@ kept (≥ 60 % agreement), flipped (≤ 40 %) or dropped. This is self-supervisi
 human label is involved. The resulting vote is only used for live stretches where the tracking
 gives no control evidence at all. The restarting team of a tagged set piece seeds the first
 possession after it.
+
+### 2.5 Sanity checks that use no ground truth
+
+The calibrated Smart Tagging agreement is an independent check on our possession labels: codes
+describing the team on the ball agree with them on 69–91 % of frames (`build up` 0.91,
+`progression` 0.87), and every `defending …` / `defensive transition` code is flipped, i.e. it names
+the team without the ball, as its meaning implies.
 
 ## 3. Assets used
 

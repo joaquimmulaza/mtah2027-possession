@@ -71,11 +71,15 @@ MIN_POSSESSION_FRAMES = 25
 # tracking noise on balls running along the line.
 OUT_MARGIN_M = 0.5
 
-# Collective intensity. In open play the median outfield player moves at ~2-3 m/s; during a
-# stoppage the whole pitch walks at ~1 m/s. Evaluated over a centred window.
+# Collective intensity: median speed of the tracked players, over a centred window. Absolute
+# thresholds do not transfer between matches (players walk far more than intuition says -- the
+# median frame of a match is ~1.4 m/s, not 2-3), so the thresholds are fractions of the match's own
+# median intensity over the graded frames: a self-calibration with no labels involved. A stoppage
+# is the whole pitch clearly below its usual pace.
 ACTIVITY_WINDOW = 50              # 2 s
-ACTIVITY_DEAD_MS = 1.3            # below this, nobody is playing
-ACTIVITY_SLOW_MS = 2.0            # below this, and the ball is still -> a set piece being set up
+ACTIVITY_DEAD_REL = 0.6           # below 60% of the match median: nobody is playing
+ACTIVITY_SLOW_REL = 0.85          # below 85% of it, and the ball is still or untracked: a set piece
+                                  # being set up
 
 # Ball "still": smoothed speed below this (m/s), as a fraction of the visible frames of a window.
 BALL_STILL_MS = 0.8
