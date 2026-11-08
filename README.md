@@ -1,4 +1,4 @@
-# Ball possession from automatic tracking — More than a Hack 2027
+# Palancas — ball possession from automatic tracking (More than a Hack 2027)
 
 Our entry to **[More than a Hack 2027, Phase 1: Ball Possession](https://github.com/metrica-sports/more-than-a-hack-2027)**
 (Metrica Sports · FC Barcelona · Mobile World Capital Barcelona).
@@ -21,8 +21,8 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements-lock.txt
 
 # Unpack the match bundle into ./data (see DATA.md), or: export MTAH_DATA_DIR=/path/to/bundle
-python -m possession.pipeline --team <TEAM_NAME>
-python evaluation/validate_submission.py evaluation/results/<TEAM_NAME>.csv
+python -m possession.pipeline --team Palancas
+python evaluation/validate_submission.py evaluation/results/Palancas.csv
 ```
 
 The same data produces the same file, byte for byte: no randomness, no network access, no model

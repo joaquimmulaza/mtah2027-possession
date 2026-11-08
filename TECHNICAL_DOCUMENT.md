@@ -1,4 +1,4 @@
-# <TEAM NAME> — Technical document
+# Palancas — Technical document
 
 More than a Hack 2027, Phase 1: Ball Possession · FC Barcelona vs Athletic Club
 
@@ -169,8 +169,8 @@ or calibrated on the provided game's ground truth or video.
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements-lock.txt
 # unpack the data bundle into ./data (or set MTAH_DATA_DIR)
-python -m possession.pipeline --team <TEAM_NAME>
-python evaluation/validate_submission.py evaluation/results/<TEAM_NAME>.csv
+python -m possession.pipeline --team Palancas
+python evaluation/validate_submission.py evaluation/results/Palancas.csv
 
 # optional: reproduce the external tuning
 python -m tools.external --download
