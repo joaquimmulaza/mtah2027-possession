@@ -16,7 +16,7 @@ full method is in **[TECHNICAL_DOCUMENT.md](TECHNICAL_DOCUMENT.md)**.
 Python 3.9+.
 
 ```bash
-git clone <this repository> && cd <it>
+git clone https://github.com/joaquimmulaza/mtah2027-possession.git && cd mtah2027-possession
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements-lock.txt
 

@@ -77,6 +77,29 @@ describing the team on the ball agree with them on 69–91 % of frames (`build u
 `progression` 0.87), and every `defending …` / `defensive transition` code is flipped, i.e. it names
 the team without the ball, as its meaning implies.
 
+### 2.6 Robustness
+
+`python -m tools.stability` moves each of eight thresholds by ±25 % and compares the result with
+the default run (no ground truth). In 14 of the 16 variants the possession structure is 93–100 %
+the same (spellF1 of variant vs default 0.89–1.00; frame agreement ≥ 97 %); possession count stays
+within 265–311. The one sensitive parameter is `ACTIVITY_SLOW_REL` (the "slow pace with a still
+ball" stoppage rule), which moves the dead share between 34 % and 48 %; it is where we would invest
+first with more time.
+
+### 2.7 Where we write `X`
+
+Outside the two graded halves, always. Inside them, only on live stretches where neither the
+tracking nor the calibrated Smart Tagging gives any evidence for either team (1,813 of 158,857
+graded frames). `spellF1` forward-fills these, so they cost nothing there; inventing a team would
+risk splitting a possession.
+
+### 2.8 Debugging without labels
+
+`python -m tools.review` builds, locally and outside git, a plain-language match report and an
+animated top-down replay of sampled possession changes, stoppages and restarts. It was used to
+inspect behaviour, as RULES.md allows. No human judgement on this game was turned into a label, a
+score, a correction or a frame-specific constant.
+
 ## 3. Assets used
 
 | asset | used | how |
